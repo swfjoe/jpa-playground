@@ -1,7 +1,10 @@
 package com.example.jpaplayground.Model;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "fruit")
@@ -13,7 +16,11 @@ public class Fruit {
 
     private String name;
     private String color;
-    private boolean isRipe;
+
+    @Column(columnDefinition = "date")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date expiresOn;
+    private boolean ripe;
 
     public Long getId() {
         return id;
@@ -39,11 +46,19 @@ public class Fruit {
         this.color = color;
     }
 
+    public Date getExpiresOn() {
+        return expiresOn;
+    }
+
+    public void setExpiresOn(Date expiresOn) {
+        this.expiresOn = expiresOn;
+    }
+
     public boolean isRipe() {
-        return isRipe;
+        return ripe;
     }
 
     public void setRipe(boolean ripe) {
-        isRipe = ripe;
+        this.ripe = ripe;
     }
 }
