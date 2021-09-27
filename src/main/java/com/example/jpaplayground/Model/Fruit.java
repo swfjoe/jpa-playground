@@ -18,6 +18,17 @@ public class Fruit {
     private String color;
     private boolean ripe;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date expiresOn;
+
+    public Date getExpiresOn() {
+        return expiresOn;
+    }
+
+    public void setExpiresOn(Date expiresOn) {
+        this.expiresOn = expiresOn;
+    }
+
     public Long getId() {
         return id;
     }

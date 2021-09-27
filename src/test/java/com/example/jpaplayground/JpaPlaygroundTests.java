@@ -11,6 +11,8 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.transaction.Transactional;
+import java.util.Calendar;
+import java.util.Date;
 
 import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -31,7 +33,7 @@ class JpaPlaygroundTests {
 	@Transactional
 	@Rollback
 	@Test
-	void testGetSingleFruitById() throws Exception {
+	public void testGetSingleFruitById() throws Exception {
 		//Setup
 		Fruit testFruit = new Fruit();
 		testFruit.setRipe(true);
@@ -41,7 +43,7 @@ class JpaPlaygroundTests {
 		this.newFruitRepository.save(testFruit);
 
 		//Execution
-		this.mvc.perform(get("/fruits/1"))
+		this.mvc.perform(get(String.format("/fruits/%d", testFruit.getId())))
 
 				//Assertions
 				.andExpect(status().isOk())
@@ -127,9 +129,55 @@ class JpaPlaygroundTests {
 		this.newFruitRepository.save(testFruit);
 
 		//Execution
-		this.mvc.perform(get("/fruits/name/grape"))
+		this.mvc.perform(get("/fruits/find/grape"))
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$[0].name", is("grape")));
+
+	}
+
+	@Transactional
+	@Rollback
+	@Test
+	public void testGetFruitByExpirationDateRange() throws Exception {
+		//Setup
+		Fruit testFruit1 = new Fruit();
+
+		testFruit1.setRipe(true);
+		testFruit1.setColor("purple");
+		testFruit1.setName("Grape");
+		testFruit1.setExpiresOn(new Date(2021-1900, Calendar.OCTOBER,01));
+
+		Fruit testFruit2 = new Fruit();
+		testFruit2.setRipe(true);
+		testFruit2.setColor("green");
+		testFruit2.setName("Grape");
+		testFruit2.setExpiresOn(new Date(2021-1900, Calendar.OCTOBER,02));
+
+		Fruit testFruit3 = new Fruit();
+		testFruit3.setRipe(true);
+		testFruit3.setColor("purple");
+		testFruit3.setName("Pineapple");
+		testFruit3.setExpiresOn(new Date(2021-1900, Calendar.OCTOBER,03));
+
+		Fruit testFruit4 = new Fruit();
+		testFruit4.setRipe(true);
+		testFruit4.setColor("orange");
+		testFruit4.setName("Orange");
+		testFruit4.setExpiresOn(new Date(2021-1900, Calendar.OCTOBER,04));
+
+		this.newFruitRepository.save(testFruit1);
+		this.newFruitRepository.save(testFruit2);
+		this.newFruitRepository.save(testFruit3);
+		this.newFruitRepository.save(testFruit4);
+
+		//Execution
+//		this.mvc.perform(get("/fruits"))
+//		.andExpect(status().is4xxClientError());
+		this.mvc.perform(get("/fruits/between?startDate=2021-10-01&endDate=2021-10-03"))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$[0].name", is("Grape")))
+				.andExpect(jsonPath("$[1].name", is("Grape")))
+				.andExpect(jsonPath("$[2].name", is("Pineapple")));
 
 	}
 
