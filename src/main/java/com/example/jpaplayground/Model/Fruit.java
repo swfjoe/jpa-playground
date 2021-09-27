@@ -16,10 +16,6 @@ public class Fruit {
 
     private String name;
     private String color;
-
-    @Column(columnDefinition = "date")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date expiresOn;
     private boolean ripe;
 
     public Long getId() {
@@ -44,14 +40,6 @@ public class Fruit {
 
     public void setColor(String color) {
         this.color = color;
-    }
-
-    public Date getExpiresOn() {
-        return expiresOn;
-    }
-
-    public void setExpiresOn(Date expiresOn) {
-        this.expiresOn = expiresOn;
     }
 
     public boolean isRipe() {

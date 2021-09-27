@@ -10,4 +10,5 @@ public interface FruitRepository extends CrudRepository<Fruit, Long> {
 
     List<Fruit> findAllByRipeIsTrue();
 
+    Iterable<Fruit> findAllByName(String name);
 }

@@ -33,8 +33,8 @@ public class FruitController {
     }
 
     @PostMapping("/fruits")
-    public void addFruitToDatabase(@RequestBody Fruit fruit) {
-        this.fruitRepository.save(fruit);
+    public Fruit addFruitToDatabase(@RequestBody Fruit fruit) {
+        return this.fruitRepository.save(fruit);
     }
 
     @DeleteMapping("/fruits/{id}")
@@ -47,6 +47,11 @@ public class FruitController {
     @GetMapping("/fruits/{id}")
     public Optional<Fruit> getFruitById(@PathVariable("id") Long id) {
         return this.fruitRepository.findById(id);
+    }
+
+    @GetMapping("/fruits/name/{name}")
+    public Iterable<Fruit> getFruitByName(@PathVariable String name) {
+        return this.fruitRepository.findAllByName(name);
     }
 
 }
