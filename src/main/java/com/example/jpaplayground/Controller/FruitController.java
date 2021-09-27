@@ -37,6 +37,11 @@ public class FruitController {
         return this.fruitRepository.save(fruit);
     }
 
+    @PatchMapping("/fruits/update/{id}")
+    public Fruit changeFruitInDatabase(@RequestBody Fruit fruit) {
+        return this.fruitRepository.save(fruit);
+    }
+
     @DeleteMapping("/fruits/{id}")
     public Optional<Fruit> deleteFruitById(@PathVariable Long id) {
         Optional<Fruit> itemDeleted = this.fruitRepository.findById(id);

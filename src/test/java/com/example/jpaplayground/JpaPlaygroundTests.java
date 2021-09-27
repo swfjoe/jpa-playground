@@ -13,8 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import javax.transaction.Transactional;
 
 import static org.hamcrest.core.Is.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -68,6 +67,31 @@ class JpaPlaygroundTests {
 				.andExpect(jsonPath("$.name", is ("Pineapple")));
 	}
 
+	@Transactional
+	@Rollback
+	@Test
+	public void testPatchMethodModifiesFruitInDatabase() throws Exception {
+		//Setup
+		Fruit testFruit = new Fruit();
+		testFruit.setRipe(true);
+		testFruit.setColor("yellow");
+		testFruit.setName("Pineapple");
+
+		//setup
+		String json = "{\"name\":\"Pineapple\",\"color\":\"yellow\",\"ripe\":false}";
+
+		this.newFruitRepository.save(testFruit);
+
+		//Execution
+		this.mvc.perform(patch("/fruits/update/1")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(json))
+
+		//Assertions
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.ripe", is(false)));
+
+	}
 
 	@Transactional
 	@Rollback
